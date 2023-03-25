@@ -22,8 +22,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="game.py" />
+    <Compile Include="board.py" />
     <Compile Include="main.py" />
+    <Compile Include="solver.py" />
+    <Compile Include="views\generatechoice.py" />
+    <Compile Include="views\mainmenu.py" />
+    <Compile Include="views\solveview.py" />
+    <Compile Include="views\view.py" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
@@ -35,6 +40,9 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="views\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
