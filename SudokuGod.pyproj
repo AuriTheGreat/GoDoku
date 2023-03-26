@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="board.py" />
+    <Compile Include="exe_generator.py" />
     <Compile Include="main.py" />
     <Compile Include="solver.py" />
     <Compile Include="views\generatechoice.py" />
@@ -43,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="requirements.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

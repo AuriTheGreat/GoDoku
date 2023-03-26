@@ -1,0 +1,8 @@
+cx-Freeze==6.13.1
+lief==0.12.3
+packaging==23.0
+pygame==2.2.0
+pygame-gui==0.6.8
+pip==21.2.4
+python-i18n==0.3.9
+setuptools==65.7.0

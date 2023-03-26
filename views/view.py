@@ -1,5 +1,6 @@
 import pygame
 import pygame_gui
+import sys
 
 #https://stackoverflow.com/questions/59781629/how-do-i-connect-a-page-to-a-button-pygame
 
@@ -47,9 +48,11 @@ class View():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.is_running = False
+                    pygame.quit()
+                    sys.exit()
+                #elif event.type == pygame.KEYDOWN:
+                #    if event.key == pygame.K_ESCAPE:
+                #        self.is_running = False
 
                 self.handle_event(event)
                 self.manager.process_events(event)
