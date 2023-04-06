@@ -51,6 +51,8 @@ class Board():
                 if newvalue!="0":
                     j.value=newvalue
                     j.default=True
+                else:
+                    j.value=""
 
     def returnPuzzleString(self):
         puzzlestring=""

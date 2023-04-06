@@ -26,6 +26,13 @@
     <Compile Include="exe_generator.py" />
     <Compile Include="main.py" />
     <Compile Include="solver.py" />
+    <Compile Include="tests\HiddenSingleMethodTest.py" />
+    <Compile Include="tests\CandidateEliminationMethodTest.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="views\generatechoice.py" />
     <Compile Include="views\mainmenu.py" />
     <Compile Include="views\solveview.py" />
@@ -43,6 +50,7 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="tests\" />
     <Folder Include="views\" />
   </ItemGroup>
   <ItemGroup>

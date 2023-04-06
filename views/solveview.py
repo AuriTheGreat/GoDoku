@@ -17,22 +17,24 @@ class SolveView(View):
                                              manager=self.manager)
 
         self.sudoku_buttons=[]
-        for c1,i in enumerate(range(9)):
-            for c2,j in enumerate(range(9)):
+        for i in range(9):
+            for j in range(9):
+                newmanager=pygame_gui.UIManager(self.screen_rect.bottomright)
+                self.managers.append(newmanager)
                 sudoku_button = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((10+60*j, 10+60*i), (60, 60)),
-                                                    manager=self.manager)
+                                                    manager=newmanager)
                 sudoku_button.allowed_characters=["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-                sudoku_button.hidden_text_char=[c1,c2]
+                sudoku_button.hidden_text_char=[i,j]
                 self.sudoku_buttons.append(sudoku_button)
 
         puzzlestring=self.config["board"]
         self.gameboard=Board(puzzlestring)
-        self.solver=Solver(self.gameboard)
-
         self.paint_board_with_puzzlestring(puzzlestring, True)
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            self.gameboard=Board(self.get_board_puzzlestring())
+            self.solver=Solver(self.gameboard)
             if event.ui_element == self.check_button:
                 if self.gameboard.isSolved():
                     self.correctnesslabel.text="Correct!"
@@ -41,8 +43,11 @@ class SolveView(View):
                     self.correctnesslabel.text="Wrong!"
                     self.correctnesslabel.rebuild()
             if event.ui_element == self.solve_button:
-                self.solver.Solve()
-                self.paint_board_with_puzzlestring(self.solver.board.returnPuzzleString())
+                outcome=self.solver.Solve()
+                self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
+                if not outcome:
+                    self.correctnesslabel.text="No solution."
+                    self.correctnesslabel.rebuild()
             if event.ui_element == self.quit_button:
                 self.exit()
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
@@ -51,16 +56,27 @@ class SolveView(View):
 
 
     def paint_board_with_puzzlestring(self, puzzlestring, initial=False):
-        for c1,i in enumerate(range(9)):
-            for c2,j in enumerate(range(9)):
-                sudoku_button=self.sudoku_buttons[c1*9+c2]
-
-                newvalue=puzzlestring[c1*9+c2]
+        for i in range(9):
+            for j in range(9):
+                sudoku_button=self.sudoku_buttons[i*9+j]
+                newvalue=puzzlestring[i*9+j]
                 if newvalue!="0":
                     sudoku_button.text=newvalue
                     if initial:
                         sudoku_button.disable()
                 self.adjust_button_theme(sudoku_button)
+
+    def get_board_puzzlestring(self):
+        puzzlestring=""
+
+        for i in self.sudoku_buttons:
+            if len(i.text)==1:
+                puzzlestring+=i.text
+            else:
+                puzzlestring+="0"
+
+        return puzzlestring
+
 
     def adjust_button_theme(self, button):
         c = Counter(button.text)
@@ -81,4 +97,5 @@ class SolveView(View):
 
         if not button.is_enabled:
             button.text_colour=(255, 241, 27)
+            button.text_cursor_colour=(33, 40, 45)
         button.rebuild()

@@ -1,5 +1,6 @@
 import pygame
 import pygame_gui
+from solver import Solver
 from views.view import View
 from views.solveview import SolveView
 
@@ -13,7 +14,7 @@ class GenerateChoice(View):
 
         self.play_button.disable()
 
-        self.warninglabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 160), (780, 40)),text="",
+        self.warninglabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 160), (780, 40)),text="Input the puzzle string below.",
                                              manager=self.manager)
 
         self.inputpuzzlestring=pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((10, 200), (780, 60)),
@@ -24,9 +25,13 @@ class GenerateChoice(View):
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            self.exit()
             if event.ui_element == self.play_button:
+                self.exit()
                 SolveView(self.screen, {"board":self.inputpuzzlestring.text}).mainloop()
+            if event.ui_element == self.generate_button:
+                solver=Solver()
+                self.inputpuzzlestring.text=solver.board.returnPuzzleString()
+                self.inputpuzzlestring.rebuild()
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             if event.ui_element==self.inputpuzzlestring:
                 self.check_length_of_input_field()

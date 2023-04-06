@@ -18,8 +18,11 @@ class View():
         self.is_running = False
 
         self.widgets = []
+        self.managers = []
 
         self.manager = pygame_gui.UIManager(self.screen_rect.bottomright)
+
+        self.managers.append(self.manager)
 
         self.create_objects()
 
@@ -37,7 +40,8 @@ class View():
 
     def draw(self, surface):
         self.screen.blit(self.background, (0, 0))
-        self.manager.draw_ui(self.window_surface)   
+        for manager in self.managers:
+            manager.draw_ui(self.window_surface)   
 
     def exit(self):
         self.is_running = False
@@ -55,7 +59,8 @@ class View():
                 #        self.is_running = False
 
                 self.handle_event(event)
-                self.manager.process_events(event)
+                for manager in self.managers:
+                    manager.process_events(event)
 
             self.update()
 
@@ -67,6 +72,7 @@ class View():
             tickrate=25
 
             self.clock.tick(tickrate)
-            self.manager.update(tickrate/1000)
+            for manager in self.managers:
+                manager.update(tickrate/1000)
 
         self.quit()
