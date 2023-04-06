@@ -1,4 +1,5 @@
 import unittest
+import board as b
 import solver as s
 
 class HiddenSingleMethodTest(unittest.TestCase):
