@@ -92,6 +92,7 @@ class Solver():
         self.solvingMethods.append(HiddenSingleMethod(board))
 
         self.board = board
+        self.solutioncount=0
         if board=="":
             self.GenerateBoard()
     def Solve(self):
@@ -108,6 +109,44 @@ class Solver():
             return True
         else:
             return False
+
+    def BruteForceSolve(self):
+        def BruteForceSolveSearch(self):
+            candidatecountpertile=[len(j.candidatevalues) for i in self.board.tiles for j in i if j.value==""]
+            if len(candidatecountpertile)==0:
+                puzzlestring=self.board.returnPuzzleString()
+                if puzzlestring not in results:
+                    results.append(puzzlestring)
+                    self.solutioncount+=1
+                return
+            smallestcandidatecount=min(candidatecountpertile)
+            if smallestcandidatecount==0:
+                return
+            for i in self.board.tiles:
+                for j in i:
+                    if smallestcandidatecount==len(j.candidatevalues):
+                        previousstring=self.board.returnPuzzleString()
+                        for k in j.candidatevalues:
+                            if self.solutioncount>1:
+                                return
+                            self.board.insertTiles(previousstring)
+                            j.value=k
+                            self.Solve()
+                            BruteForceSolveSearch(self)
+
+
+        self.solutioncount=0
+        results=[]
+
+        self.Solve()
+
+        BruteForceSolveSearch(self)
+
+        if self.solutioncount==1:
+            self.board.insertTiles(results[0])
+            return True
+        return False
+
 
     def HelperSolve(self):
         for i in self.solvingMethods:
@@ -156,7 +195,7 @@ class Solver():
         self.board=gameboard
 
         #removes values from tiles until solver is unable to solve it
-        failedattempts=20
+        failedattempts=5
         currentattempt=0
         possibletiles=[[i, j] for i in range(9) for j in range(9)]
         lastcorrectpuzzlestring=self.board.returnPuzzleString()

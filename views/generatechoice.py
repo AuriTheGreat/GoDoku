@@ -32,6 +32,7 @@ class GenerateChoice(View):
                 solver=Solver()
                 self.inputpuzzlestring.text=solver.board.returnPuzzleString()
                 self.inputpuzzlestring.rebuild()
+                self.check_length_of_input_field()
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             if event.ui_element==self.inputpuzzlestring:
                 self.check_length_of_input_field()

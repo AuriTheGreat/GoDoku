@@ -12,6 +12,7 @@
     <Name>SudokuGod</Name>
     <RootNamespace>SudokuGod</RootNamespace>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <TestFramework>unittest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,8 +27,9 @@
     <Compile Include="exe_generator.py" />
     <Compile Include="main.py" />
     <Compile Include="solver.py" />
-    <Compile Include="tests\HiddenSingleMethodTest.py" />
-    <Compile Include="tests\CandidateEliminationMethodTest.py">
+    <Compile Include="tests\test_BruteForceSolve.py" />
+    <Compile Include="tests\test_HiddenSingleMethod.py" />
+    <Compile Include="tests\test_CandidateEliminationMethod.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\__init__.py">

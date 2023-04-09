@@ -7,13 +7,17 @@ from collections import Counter
 
 class SolveView(View):
     def create_objects(self):
-        self.solve_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((650, 10), (140, 50)),text="Solve",
+        self.solve_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 10), (240, 50)),text="Solve",
                                              manager=self.manager)
-        self.check_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((650, 70), (140, 50)),text="Check",
+        self.bruteforce_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 70), (240, 50)),text="Brute Force",
                                              manager=self.manager)
-        self.correctnesslabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((650, 120), (140, 40)),text="",
+        self.check_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 130), (240, 50)),text="Check",
                                              manager=self.manager)
-        self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((650, 540), (140, 50)),text="Quit",
+        self.correctnesslabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((550, 180), (240, 40)),text="",
+                                             manager=self.manager)
+        self.correctnesslabel2 = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((550, 230), (240, 40)),text="",
+                                             manager=self.manager)
+        self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 540), (240, 50)),text="Quit",
                                              manager=self.manager)
 
         self.sudoku_buttons=[]
@@ -35,6 +39,7 @@ class SolveView(View):
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             self.gameboard=Board(self.get_board_puzzlestring())
             self.solver=Solver(self.gameboard)
+            self.correctnesslabel2.text=""
             if event.ui_element == self.check_button:
                 if self.gameboard.isSolved():
                     self.correctnesslabel.text="Correct!"
@@ -43,13 +48,29 @@ class SolveView(View):
                     self.correctnesslabel.text="Wrong!"
                     self.correctnesslabel.rebuild()
             if event.ui_element == self.solve_button:
+                previousstring=self.gameboard.returnPuzzleString()
                 outcome=self.solver.Solve()
-                self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
                 if not outcome:
-                    self.correctnesslabel.text="No solution."
+                    self.gameboard.insertTiles(previousstring)
+                    self.correctnesslabel.text="Solution was not found."
+                    self.correctnesslabel2.text="Brute-force is recommended."
                     self.correctnesslabel.rebuild()
+                self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
+            if event.ui_element == self.bruteforce_button:
+                outcome=self.solver.BruteForceSolve()
+                print(self.solver.solutioncount)
+                if self.solver.solutioncount==0:
+                    self.correctnesslabel.text="No solution."
+                elif self.solver.solutioncount>1:
+                    self.correctnesslabel.text="Too many solutions."
+                else:
+                    self.correctnesslabel.text=""
+                self.correctnesslabel.rebuild()
+                if outcome:
+                    self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
             if event.ui_element == self.quit_button:
                 self.exit()
+            self.correctnesslabel2.rebuild()
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             if event.ui_element in self.sudoku_buttons:
                 self.adjust_button_theme(event.ui_element)
