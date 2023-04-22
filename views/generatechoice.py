@@ -3,10 +3,14 @@ import pygame_gui
 from solver import Solver
 from views.view import View
 from views.solveview import SolveView
+from views.inputboardview import InputBoardView
 
 class GenerateChoice(View):
     def create_objects(self):
         self.generate_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 100), (100, 50)),text="Generate",
+                                             manager=self.manager)
+
+        self.input_board_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((110, 100), (150, 50)),text="Input Board",
                                              manager=self.manager)
 
         self.play_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 540), (100, 50)),text="Play",
@@ -31,6 +35,11 @@ class GenerateChoice(View):
             if event.ui_element == self.generate_button:
                 solver=Solver()
                 self.inputpuzzlestring.text=solver.board.returnPuzzleString()
+                self.inputpuzzlestring.rebuild()
+                self.check_length_of_input_field()
+            if event.ui_element == self.input_board_button:
+                boardstring=InputBoardView(self.screen, {"board": self.inputpuzzlestring.text}).mainloop()
+                self.inputpuzzlestring.text=boardstring
                 self.inputpuzzlestring.rebuild()
                 self.check_length_of_input_field()
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:

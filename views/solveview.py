@@ -4,6 +4,7 @@ from board import Board
 from solver import Solver
 from views.view import View
 from collections import Counter
+from views.inputboardview import InputBoardView
 
 class SolveView(View):
     def create_objects(self):
@@ -16,6 +17,8 @@ class SolveView(View):
         self.correctnesslabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((550, 180), (240, 40)),text="",
                                              manager=self.manager)
         self.correctnesslabel2 = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((550, 230), (240, 40)),text="",
+                                             manager=self.manager)
+        self.edit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 430), (240, 50)),text="Edit Board",
                                              manager=self.manager)
         self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 540), (240, 50)),text="Quit",
                                              manager=self.manager)
@@ -31,9 +34,9 @@ class SolveView(View):
                 sudoku_button.hidden_text_char=[i,j]
                 self.sudoku_buttons.append(sudoku_button)
 
-        puzzlestring=self.config["board"]
-        self.gameboard=Board(puzzlestring)
-        self.paint_board_with_puzzlestring(puzzlestring, True)
+        self.startpuzzlestring=self.config["board"]
+        self.gameboard=Board(self.startpuzzlestring)
+        self.paint_board_with_puzzlestring(self.startpuzzlestring, True)
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
@@ -58,7 +61,6 @@ class SolveView(View):
                 self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
             if event.ui_element == self.bruteforce_button:
                 outcome=self.solver.BruteForceSolve()
-                print(self.solver.solutioncount)
                 if self.solver.solutioncount==0:
                     self.correctnesslabel.text="No solution."
                 elif self.solver.solutioncount>1:
@@ -68,6 +70,10 @@ class SolveView(View):
                 self.correctnesslabel.rebuild()
                 if outcome:
                     self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
+            if event.ui_element == self.edit_button:
+                boardstring=InputBoardView(self.screen, {"board": self.config["board"]}).mainloop()
+                self.exit()
+                SolveView(self.screen, {"board":boardstring}).mainloop()
             if event.ui_element == self.quit_button:
                 self.exit()
             self.correctnesslabel2.rebuild()
