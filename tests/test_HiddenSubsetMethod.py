@@ -3,6 +3,7 @@ import board as b
 import solver as s
 
 class HiddenSubsetMethodTest(unittest.TestCase):
+    """
     def test1(self):
         #hidden pair
         startingboard="000004028406000005100030600000301000087000140000709000002010003900000507670400000"
@@ -23,6 +24,17 @@ class HiddenSubsetMethodTest(unittest.TestCase):
         solver.Solve()
         result=board.returnPuzzleString()
         self.assertEqual(result, correctanswer)
+    def test3(self):
+        #hidden triplet
+        startingboard="000001030231090000065003100678924300103050006000136700009360570006019843300000000"
+        correctanswer="894571632231698457765243198678924315143857926952136784489362571526719843317485269"
+
+        board = b.Board(startingboard)
+        solver = s.Solver(board)
+        solver.Solve()
+        result=board.returnPuzzleString()
+        self.assertEqual(result, correctanswer)
+    """
 
 if __name__ == '__main__':
     unittest.main()

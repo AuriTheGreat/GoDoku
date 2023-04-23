@@ -28,6 +28,7 @@
     <Compile Include="main.py" />
     <Compile Include="solver.py" />
     <Compile Include="tests\test_BruteForceSolve.py" />
+    <Compile Include="tests\test_NakedSubsetMethod.py" />
     <Compile Include="tests\test_HiddenSubsetMethod.py" />
     <Compile Include="tests\test_HiddenSingleMethod.py" />
     <Compile Include="tests\test_CandidateEliminationMethod.py">
