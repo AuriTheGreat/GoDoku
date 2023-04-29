@@ -9,16 +9,17 @@ class SolvingMethod():
         self.board = board
         self.candidateschanged=False
         self.valuefound=False
-    def Solve(self):
+        self.helperresponse=""
+    def Solve(self, helper=False):
         return
-    def HelperSolve(self):
-        return
+    def HelperSolve(self, helper=False):
+        self.Solve(helper=True)
 
 class CandidateTilesElimination(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Candidate Tiles Elimination"
-    def Solve(self):
+    def Solve(self, helper=False):
         values=["1", "2", "3", "4", "5", "6", "7", "8", "9"]
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
@@ -32,6 +33,9 @@ class CandidateTilesElimination(SolvingMethod):
                         self.valuefound=True
                         j.value=j.candidatevalues
                         j.candidatevalues=""
+                        if helper:
+                            self.helperresponse=j.name + " is " + j.value + " because of " + self.name + "." + " The digit is the only possible candidate in the tile."
+                            return self.valuefound
                 #print([k.value for k in i])
                 #print([k[c2].value for k in self.board.tiles])
         return self.valuefound
@@ -40,7 +44,7 @@ class HiddenSingleMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Hidden Single Method"
-    def Solve(self):
+    def Solve(self, helper=False):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 candidatevalues_in_same_row=[k.candidatevalues for k in i]
@@ -93,7 +97,7 @@ class NakedPairMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Naked Pair Method"
-    def Solve(self):
+    def Solve(self, helper=False):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i
@@ -138,7 +142,7 @@ class NakedTripletMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Naked Triplet Method"
-    def Solve(self):
+    def Solve(self, helper=False):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i
@@ -184,7 +188,7 @@ class NakedQuadMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Naked Quad Method"
-    def Solve(self):
+    def Solve(self, helper=False):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i
@@ -217,10 +221,10 @@ class NakedQuadMethod(SolvingMethod):
                                 if i!=a and i!=b and i!=c and i!=d:
                                     newvalues="".join([k for k in i.candidatevalues if k not in sorted(set(a.candidatevalues+b.candidatevalues+c.candidatevalues+d.candidatevalues))])
                                     if i.candidatevalues!=newvalues:
+                                        changed=True
                                         self.candidateschanged=True
                                         i.candidatevalues=newvalues
                                         if len(i.candidatevalues)==1:
-                                            changed=True
                                             self.valuefound=True
                                             i.value=i.candidatevalues[0]
                                             i.candidatevalues=""
@@ -232,7 +236,7 @@ class HiddenPairMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Hidden Pair Method"
-    def Solve(self):
+    def Solve(self, helper=False):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i
@@ -278,7 +282,7 @@ class HiddenTripletMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Hidden Triplet Method"
-    def Solve(self):
+    def Solve(self, helper=False):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i
@@ -327,6 +331,28 @@ class HiddenTripletMethod(SolvingMethod):
 
         return False
 
+class PointingPairsMethod(SolvingMethod):
+    def __init__(self, board):
+        super().__init__(board)
+        self.name = "Pointing Pairs Method"
+    def Solve(self, helper=False):
+        for c1, i in enumerate(self.board.tiles):
+            for c2, j in enumerate(i):
+                tiles_in_same_row=i
+                if self.FindTriplets(tiles_in_same_row):
+                    return True
+
+                tiles_in_same_column=[k[c2] for k in self.board.tiles]
+                if self.FindTriplets(tiles_in_same_column):
+                    return True
+
+                tiles_in_same_box=[g for c3,k in enumerate(self.board.tiles) for c4,g in enumerate(k) if math.floor(c1/3)==math.floor(c3/3) and math.floor(c2/3)==math.floor(c4/3)]
+                if self.FindTriplets(tiles_in_same_box):
+                    return True
+
+        return False
+    
+
 class Solver():
     def __init__(self, board=""):
         self.solvingMethods=[]
@@ -339,31 +365,38 @@ class Solver():
         self.solvingMethods.append(NakedQuadMethod(board))
 
         self.board = board
+        self.helperresponse=""
         self.solutioncount=0
         if board=="":
             self.GenerateBoard()
-    def Solve(self, lastmethod=""):
+    def Solve(self, lastmethod="", helper=False):
         for i in self.solvingMethods:
             if i.name=="Candidate Tiles Elimination" and lastmethod in ["Naked Pair Method", "Naked Triplet Method", "Naked Quad Method", "Hidden Pair Method", "Hidden Triplet Method"]:
                 continue
             i.board=self.board
-            i.Solve()
+            i.Solve(helper)
             """
             if i.valuefound or i.candidateschanged:
                 if i.valuefound:
                     print(i.name, "(Digit found)")
                 else:
-                    print(i.name, "(Candidates)")
+                    print(i.name, "(Candidates eliminated)")
                 print(i.board)
             """
             if i.valuefound:
                 i.candidateschanged=False
                 i.valuefound=False
-                self.Solve()
+                if helper:
+                    self.helperresponse=i.helperresponse
+                    return True
+                self.Solve(helper)
                 break
             if i.candidateschanged:
                 i.candidateschanged=False
-                self.Solve(lastmethod=i.name)
+                if helper:
+                    self.helperresponse=i.helperresponse
+                    return True
+                self.Solve(lastmethod=i.name, helper=helper)
                 break
         if self.board.isSolved():
             return True
@@ -408,9 +441,8 @@ class Solver():
         return False
 
 
-    def HelperSolve(self):
-        for i in self.solvingMethods:
-            i.HelperSolve()
+    def HelperSolve(self, helper=False):
+        return self.Solve(helper=True)
 
     def GenerateBoard(self):
         board=[[7, 3, 5, 1, 6, 4, 9, 2, 8],

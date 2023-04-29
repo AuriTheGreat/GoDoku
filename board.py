@@ -1,12 +1,14 @@
 class Tile():
-    def __init__(self):
+    def __init__(self, x, y):
+        self.coordinates=[x, y]
+        self.name="r"+str(x+1)+"c"+str(y+1)
         self.value=""
         self.candidatevalues=""
         self.default=False
 
 class Board():
     def __init__(self, string):
-        self.tiles = [[Tile() for i in range(9)] for j in range(9)]
+        self.tiles = [[Tile(j, i) for i in range(9)] for j in range(9)]
         self.insertTiles(string)
 
     def __str__(self):

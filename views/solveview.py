@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 import pygame
 import pygame_gui
 from board import Board
@@ -12,13 +13,17 @@ class SolveView(View):
                                              manager=self.manager)
         self.bruteforce_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 70), (240, 50)),text="Brute Force",
                                              manager=self.manager)
-        self.check_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 130), (240, 50)),text="Check",
+        self.partialsolve_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 130), (240, 50)),text="Partial Solve",
                                              manager=self.manager)
-        self.correctnesslabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((550, 180), (240, 40)),text="",
+        self.check_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 190), (240, 50)),text="Check",
                                              manager=self.manager)
-        self.correctnesslabel2 = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((550, 230), (240, 40)),text="",
+        self.messagebox = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((550, 250), (240, 230)),
                                              manager=self.manager)
-        self.edit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 430), (240, 50)),text="Edit Board",
+        self.messagebox.disable()
+        self.messagebox.html_text=""
+        self.messagebox.rebuild()
+
+        self.edit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 480), (240, 50)),text="Edit Board",
                                              manager=self.manager)
         self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 540), (240, 50)),text="Quit",
                                              manager=self.manager)
@@ -42,32 +47,37 @@ class SolveView(View):
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             self.gameboard=Board(self.get_board_puzzlestring())
             self.solver=Solver(self.gameboard)
-            self.correctnesslabel2.text=""
+            self.messagebox.html_text=""
             if event.ui_element == self.check_button:
                 if self.gameboard.isSolved():
-                    self.correctnesslabel.text="Correct!"
-                    self.correctnesslabel.rebuild()
+                    self.messagebox.html_text="Correct!"
+                    self.messagebox.rebuild()
                 else:
-                    self.correctnesslabel.text="Wrong!"
-                    self.correctnesslabel.rebuild()
+                    self.messagebox.html_text="Wrong!"
+                    self.messagebox.rebuild()
             if event.ui_element == self.solve_button:
                 previousstring=self.gameboard.returnPuzzleString()
                 outcome=self.solver.Solve()
                 if not outcome:
                     self.gameboard.insertTiles(previousstring)
-                    self.correctnesslabel.text="Solution was not found."
-                    self.correctnesslabel2.text="Brute-force is recommended."
-                    self.correctnesslabel.rebuild()
+                    self.messagebox.html_text="Solution was not found.\nBrute-force is recommended."
+                    self.messagebox.rebuild()
                 self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
+            if event.ui_element == self.partialsolve_button:
+                outcome=self.solver.HelperSolve()
+                if outcome:
+                    self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
+                    self.messagebox.html_text=self.solver.helperresponse
+                    self.messagebox.rebuild()
             if event.ui_element == self.bruteforce_button:
                 outcome=self.solver.BruteForceSolve()
                 if self.solver.solutioncount==0:
-                    self.correctnesslabel.text="No solution."
+                    self.messagebox.html_text="No solution."
                 elif self.solver.solutioncount>1:
-                    self.correctnesslabel.text="Too many solutions."
+                    self.messagebox.html_text="Too many solutions."
                 else:
-                    self.correctnesslabel.text=""
-                self.correctnesslabel.rebuild()
+                    self.messagebox.html_text=""
+                self.messagebox.rebuild()
                 if outcome:
                     self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
             if event.ui_element == self.edit_button:
@@ -76,7 +86,7 @@ class SolveView(View):
                 SolveView(self.screen, {"board":boardstring}).mainloop()
             if event.ui_element == self.quit_button:
                 self.exit()
-            self.correctnesslabel2.rebuild()
+            self.messagebox.rebuild()
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             if event.ui_element in self.sudoku_buttons:
                 self.adjust_button_theme(event.ui_element)
