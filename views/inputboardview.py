@@ -1,5 +1,6 @@
 import pygame
 import pygame_gui
+import sys
 from board import Board
 from solver import Solver
 from views.view import View
@@ -19,6 +20,7 @@ class InputBoardView(View):
                                                     manager=newmanager)
                 sudoku_button.allowed_characters=["1", "2", "3", "4", "5", "6", "7", "8", "9"]
                 sudoku_button.hidden_text_char=[i,j]
+                sudoku_button.length_limit=1
                 self.sudoku_buttons.append(sudoku_button)
 
         if not self.config["board"]:
@@ -26,7 +28,7 @@ class InputBoardView(View):
         elif len(self.config["board"])>81:
             self.config["board"]=self.config["board"][:81]
         elif len(self.config["board"])<81:
-            self.config["board"]=self.config["board"] + "0" * len(self.config["board"])
+            self.config["board"]=self.config["board"] + "0" * (81-len(self.config["board"]))
 
         self.paint_board_with_puzzlestring(self.config["board"])
 
