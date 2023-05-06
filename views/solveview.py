@@ -1,3 +1,4 @@
+from gc import isenabled
 from pyexpat.errors import messages
 import pygame
 import pygame_gui
@@ -9,23 +10,27 @@ from views.inputboardview import InputBoardView
 
 class SolveView(View):
     def create_objects(self):
-        self.solve_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 10), (240, 50)),text="Solve",
+        self.candidates_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((10, 10), (180, 40)),text="Input Candidates",
                                              manager=self.manager)
-        self.bruteforce_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 70), (240, 50)),text="Brute Force",
+        self.clear_candidates_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((190, 10), (180, 40)),text="Clear Candidates",
                                              manager=self.manager)
-        self.partialsolve_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 130), (240, 50)),text="Partial Solve",
+        self.solve_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 10), (240, 40)),text="Solve",
                                              manager=self.manager)
-        self.check_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 190), (240, 50)),text="Check",
+        self.bruteforce_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 50), (240, 40)),text="Brute Force",
                                              manager=self.manager)
-        self.messagebox = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((550, 250), (240, 230)),
+        self.partialsolve_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 90), (240, 40)),text="Partial Solve",
+                                             manager=self.manager)
+        self.check_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 130), (240, 40)),text="Check",
+                                             manager=self.manager)
+        self.messagebox = pygame_gui.elements.UITextEntryBox(relative_rect=pygame.Rect((550, 170), (240, 340)),
                                              manager=self.manager)
         self.messagebox.disable()
         self.messagebox.html_text=""
         self.messagebox.rebuild()
 
-        self.edit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 480), (240, 50)),text="Edit Board",
+        self.edit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 510), (240, 40)),text="Edit Board",
                                              manager=self.manager)
-        self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 540), (240, 50)),text="Quit",
+        self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 550), (240, 40)),text="Quit",
                                              manager=self.manager)
 
         self.sudoku_buttons=[]
@@ -33,7 +38,7 @@ class SolveView(View):
             for j in range(9):
                 newmanager=pygame_gui.UIManager(self.screen_rect.bottomright)
                 self.managers.append(newmanager)
-                sudoku_button = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((10+60*j, 10+60*i), (60, 60)),
+                sudoku_button = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((10+60*j, 50+60*i), (60, 60)),
                                                     manager=newmanager)
                 sudoku_button.allowed_characters=["1", "2", "3", "4", "5", "6", "7", "8", "9"]
                 sudoku_button.hidden_text_char=[i,j]
@@ -48,6 +53,11 @@ class SolveView(View):
             self.gameboard=Board(self.get_board_puzzlestring())
             self.solver=Solver(self.gameboard)
             self.messagebox.html_text=""
+            if event.ui_element == self.candidates_button:
+                outcome=self.solver.FindCandidates()
+                self.paint_board_with_candidates()
+            if event.ui_element == self.clear_candidates_button:
+                self.clear_candidates()
             if event.ui_element == self.check_button:
                 if self.gameboard.isSolved():
                     self.messagebox.html_text="Correct!"
@@ -68,6 +78,9 @@ class SolveView(View):
                 if outcome:
                     self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
                     self.messagebox.html_text=self.solver.helperresponse
+                    self.messagebox.rebuild()
+                else:
+                    self.messagebox.html_text="Solution was not found.\nBrute-force is recommended."
                     self.messagebox.rebuild()
             if event.ui_element == self.bruteforce_button:
                 outcome=self.solver.BruteForceSolve()
@@ -91,6 +104,25 @@ class SolveView(View):
             if event.ui_element in self.sudoku_buttons:
                 self.adjust_button_theme(event.ui_element)
 
+    def paint_board_with_candidates(self):
+        for i in range(9):
+            for j in range(9):
+                sudoku_button=self.sudoku_buttons[i*9+j]
+                if not sudoku_button.is_enabled:
+                    continue
+                if self.solver.board.tiles[i][j].value:
+                    sudoku_button.text=self.solver.board.tiles[i][j].value
+                else: 
+                    sudoku_button.text=self.solver.board.tiles[i][j].candidatevalues
+                self.adjust_button_theme(sudoku_button)
+
+    def clear_candidates(self):
+        for i in range(9):
+            for j in range(9):
+                sudoku_button=self.sudoku_buttons[i*9+j]
+                if len(sudoku_button.text)>1:
+                    sudoku_button.text=""
+                    self.adjust_button_theme(sudoku_button)
 
     def paint_board_with_puzzlestring(self, puzzlestring, initial=False):
         for i in range(9):

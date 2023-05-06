@@ -27,6 +27,17 @@
     <Compile Include="exe_generator.py" />
     <Compile Include="main.py" />
     <Compile Include="solver.py" />
+    <Compile Include="solving_methods\PointingSubsetsMethod.py" />
+    <Compile Include="solving_methods\BoxCandidateReductionMethod.py" />
+    <Compile Include="solving_methods\HiddenTripletMethod.py" />
+    <Compile Include="solving_methods\HiddenPairMethod.py" />
+    <Compile Include="solving_methods\NakedQuadMethod.py" />
+    <Compile Include="solving_methods\NakedTripletMethod.py" />
+    <Compile Include="solving_methods\NakedPairMethod.py" />
+    <Compile Include="solving_methods\HiddenSingleMethod.py" />
+    <Compile Include="solving_methods\CandidateTilesElimination.py" />
+    <Compile Include="solving_methods\SolvingMethod.py" />
+    <Compile Include="solving_methods\__init__.py" />
     <Compile Include="tests\test_BruteForceSolve.py" />
     <Compile Include="tests\test_InteractionMethod.py" />
     <Compile Include="tests\test_NakedSubsetMethod.py" />
@@ -56,6 +67,7 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="solving_methods\" />
     <Folder Include="tests\" />
     <Folder Include="views\" />
   </ItemGroup>

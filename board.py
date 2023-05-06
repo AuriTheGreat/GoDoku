@@ -6,6 +6,15 @@ class Tile():
         self.candidatevalues=""
         self.default=False
 
+    def solecandidate(self):
+        if len(self.candidatevalues)==1:
+            self.valuefound=True
+            changed=True
+            self.value=self.candidatevalues[0]
+            self.candidatevalues=""
+            return True
+        return False
+
 class Board():
     def __init__(self, string):
         self.tiles = [[Tile(j, i) for i in range(9)] for j in range(9)]

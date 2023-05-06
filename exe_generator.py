@@ -11,7 +11,7 @@ if sys.platform == "win32":
 
 setup(
     name="SudokuGod",
-    version="0.1",
+    version="0.8",
     author="aurims",
     description="Sudoku solver",
     options={"build_exe": build_exe_options},

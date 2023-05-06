@@ -3,7 +3,6 @@ import board as b
 import solver as s
 
 class InteractionMethodTest(unittest.TestCase):
-    """
     def test1(self):
         #pointing pair
         startingboard="085060001941587263030010085004005816050176000162800500000050040510700000400030059"
@@ -24,7 +23,6 @@ class InteractionMethodTest(unittest.TestCase):
         solver.Solve()
         result=board.returnPuzzleString()
         self.assertEqual(result, correctanswer)
-    """
 
 if __name__ == '__main__':
     unittest.main()

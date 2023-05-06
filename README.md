@@ -9,8 +9,8 @@ and is able to give out helpful advice.
 	- Hidden Singles
 	- Naked Subsets (Pairs, Triplets, Quads)
 - Different ways to input Sudoku boards, using:
--- Puzzle string
--- GUI
+	- Puzzle string
+	- GUI
 
 ## TODO
 - Interaction Methods (Pointing pairs and box-row reduction)
