@@ -5,6 +5,8 @@ class CandidateTilesElimination(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Candidate Tiles Elimination"
+        self.description = "The digit is the only possible candidate in the tile"
+
     def Solve(self, helper=False):
         values=["1", "2", "3", "4", "5", "6", "7", "8", "9"]
         for c1, i in enumerate(self.board.tiles):
@@ -19,9 +21,6 @@ class CandidateTilesElimination(SolvingMethod):
                         self.valuefound=True
                         j.value=j.candidatevalues
                         j.candidatevalues=""
-                        if helper:
-                            self.helperresponse=j.name + " is " + j.value + " because of " + self.name + "." + " The digit is the only possible candidate in the tile."
-                            return self.valuefound
                 #print([k.value for k in i])
                 #print([k[c2].value for k in self.board.tiles])
-        return self.valuefound
+        return False

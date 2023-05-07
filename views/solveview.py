@@ -14,6 +14,8 @@ class SolveView(View):
                                              manager=self.manager)
         self.clear_candidates_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((190, 10), (180, 40)),text="Clear Candidates",
                                              manager=self.manager)
+        self.undo_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((490, 10), (60, 40)),text="Undo",
+                                             manager=self.manager)
         self.solve_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 10), (240, 40)),text="Solve",
                                              manager=self.manager)
         self.bruteforce_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((550, 50), (240, 40)),text="Brute Force",
@@ -46,12 +48,19 @@ class SolveView(View):
 
         self.startpuzzlestring=self.config["board"]
         self.gameboard=Board(self.startpuzzlestring)
+        self.solver=Solver(self.gameboard)
         self.paint_board_with_puzzlestring(self.startpuzzlestring, True)
+        self.savedstates=[self.get_board_puzzlestring_with_candidates()]
 
     def handle_event(self, event):
+        situation=self.get_board_puzzlestring_with_candidates()
+        if self.savedstates[len(self.savedstates)-1]!=situation:
+            self.savedstates.append(situation)
+
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             self.gameboard=Board(self.get_board_puzzlestring())
-            self.solver=Solver(self.gameboard)
+            self.solver.board=self.gameboard
+            #self.solver=Solver(self.gameboard)
             self.messagebox.html_text=""
             if event.ui_element == self.candidates_button:
                 outcome=self.solver.FindCandidates()
@@ -74,14 +83,16 @@ class SolveView(View):
                     self.messagebox.rebuild()
                 self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
             if event.ui_element == self.partialsolve_button:
-                outcome=self.solver.HelperSolve()
+                oldstring=self.get_board_puzzlestring_with_candidates()
+                outcome=self.solver.HelperSolve(oldstring)
                 if outcome:
-                    self.paint_board_with_puzzlestring(self.gameboard.returnPuzzleString())
+                    self.paint_board_with_candidates()
+                    self.get_board_puzzlestring_with_candidates()
                     self.messagebox.html_text=self.solver.helperresponse
                     self.messagebox.rebuild()
                 else:
-                    self.messagebox.html_text="Solution was not found.\nBrute-force is recommended."
-                    self.messagebox.rebuild()
+                    if not self.solver.board.isSolved():
+                        self.messagebox.html_text="Solution was not found.\nBrute-force is recommended."
             if event.ui_element == self.bruteforce_button:
                 outcome=self.solver.BruteForceSolve()
                 if self.solver.solutioncount==0:
@@ -97,6 +108,13 @@ class SolveView(View):
                 boardstring=InputBoardView(self.screen, {"board": self.config["board"]}).mainloop()
                 self.exit()
                 SolveView(self.screen, {"board":boardstring}).mainloop()
+            if event.ui_element == self.undo_button:
+                if self.savedstates:
+                    self.gameboard.insertTiles_with_candidates(self.savedstates[len(self.savedstates)-2])
+                    if len(self.savedstates)>1:
+                        self.savedstates.pop()
+                    self.paint_board_with_candidates()
+                return
             if event.ui_element == self.quit_button:
                 self.exit()
             self.messagebox.rebuild()
@@ -143,6 +161,15 @@ class SolveView(View):
                 puzzlestring+=i.text
             else:
                 puzzlestring+="0"
+
+        return puzzlestring
+
+    def get_board_puzzlestring_with_candidates(self):
+        puzzlestring=""
+        for c,i in enumerate(self.sudoku_buttons):
+            puzzlestring+=i.text
+            if c!=80:
+                puzzlestring+="/"
 
         return puzzlestring
 

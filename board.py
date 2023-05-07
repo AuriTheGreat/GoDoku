@@ -65,6 +65,15 @@ class Board():
                 else:
                     j.value=""
 
+    def insertTiles_with_candidates(self, string):
+        string=string.split("/")
+        for c1, i in enumerate(self.tiles):
+            for c2, j in enumerate(i):
+                newvalue=string[c1*9+c2]
+                j.value=newvalue
+                j.default=True
+
+
     def returnPuzzleString(self):
         puzzlestring=""
         for i in self.tiles:
@@ -73,4 +82,15 @@ class Board():
                     puzzlestring+=j.value
                 else:
                     puzzlestring+="0"
+        return puzzlestring
+
+    def returnPuzzleString_with_candidates(self):
+        puzzlestring=""
+        for c1,i in enumerate(self.tiles):
+            for c2,j in enumerate(i):
+                puzzlestring+=j.value
+                puzzlestring+=j.candidatevalues
+                if c1!=8 or c2!=8:
+                    puzzlestring+="/"
+
         return puzzlestring

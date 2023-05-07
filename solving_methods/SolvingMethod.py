@@ -5,7 +5,6 @@ class SolvingMethod():
         self.board = board
         self.candidateschanged=False
         self.valuefound=False
-        self.helperresponse=""
     def Solve(self, helper=False):
         return
     def HelperSolve(self, helper=False):
