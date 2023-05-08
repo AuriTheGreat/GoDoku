@@ -5,6 +5,7 @@ class PointingSubsetsMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Pointing Subsets Method"
+        self.description = "A particular digit must appear within a row or column within other box. This eliminates the digit on the same row or column in this box"
     def Solve(self, helper=False):
         for i in range(9):
             currenttile=self.board.tiles[i][(i*3)%9+math.floor(i/3)]

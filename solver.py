@@ -132,10 +132,9 @@ class Solver():
 
 
     def HelperSolve(self, currentsolution=""):
-        if not(self.solutionlist and self.partialsolutionstep==currentsolution):
+        if not(self.solutionlist and self.partialsolutionstep.newboard==currentsolution):
             self.solutionlist=[]
             puzzlestring=self.board.returnPuzzleString_with_candidates()
-            self.partialsolutionstep=puzzlestring
             if self.Solve():
                 self.board.insertTiles_with_candidates(puzzlestring)
                 self.Solve(helper=True)
@@ -143,7 +142,7 @@ class Solver():
             else:
                 return False
         if self.solutionlist:
-            self.partialsolutionstep=self.solutionlist.pop()
+            self.partialsolutionstep=self.solutionlist.pop(0)
             self.board.insertTiles_with_candidates(self.partialsolutionstep.newboard)
             self.helperresponse=self.partialsolutionstep.response
             return True
