@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import random
+import time
 from board import Board
 from solving_methods import CandidateTilesElimination, HiddenSingleMethod, NakedPairMethod, NakedTripletMethod, NakedQuadMethod, HiddenPairMethod, HiddenTripletMethod, PointingSubsetsMethod, BoxCandidateReductionMethod
 
@@ -11,7 +12,6 @@ class SolutionStep():
         oldstring=oldstring.split("/")
         newstring=newstring.split("/")
 
-        digitfound=False
         differences=[]
 
         if method.name=="Candidate Tiles Elimination":
@@ -207,6 +207,7 @@ class Solver():
             tile.value=""
             puzzlestring=self.board.returnPuzzleString()
             outcome=self.Solve()
+            time.sleep(0.000001) # to ensure there is time to run the main loop while this is running on other thread
             if outcome:
                 currentattempt=0
                 lastcorrectpuzzlestring=puzzlestring

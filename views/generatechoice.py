@@ -1,5 +1,6 @@
 import pygame
 import pygame_gui
+import threading
 from solver import Solver
 from views.view import View
 from views.solveview import SolveView
@@ -24,19 +25,21 @@ class GenerateChoice(View):
         self.inputpuzzlestring=pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((10, 200), (780, 60)),
                                                     manager=self.manager)
         self.inputpuzzlestring.allowed_characters=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        #self.inputpuzzlestring.disable()
+        self.running_generation=False
 
+        self.waitinglabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((650, 0), (180, 40)),text="",
+                                             manager=self.manager)
 
     def handle_event(self, event):
-        if event.type == pygame_gui.UI_BUTTON_PRESSED:
+        if event.type == pygame_gui.UI_BUTTON_PRESSED and not self.running_generation:
             if event.ui_element == self.play_button:
                 self.exit()
                 SolveView(self.screen, {"board":self.inputpuzzlestring.text}).mainloop()
             if event.ui_element == self.generate_button:
-                solver=Solver()
-                self.inputpuzzlestring.text=solver.board.returnPuzzleString()
-                self.inputpuzzlestring.rebuild()
-                self.check_length_of_input_field()
+                self.running_generation=True
+                self.inputpuzzlestring.disable()
+                t=threading.Thread(target=self.generate_board, daemon=True)
+                t.start()
             if event.ui_element == self.input_board_button:
                 boardstring=InputBoardView(self.screen, {"board": self.inputpuzzlestring.text}).mainloop()
                 self.inputpuzzlestring.text=boardstring
@@ -45,6 +48,15 @@ class GenerateChoice(View):
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             if event.ui_element==self.inputpuzzlestring:
                 self.check_length_of_input_field()
+
+    def update(self):
+        if self.running_generation:
+            #print(threading.main_thread())
+            self.updatewaitingstatus()
+            #print(self.waitinglabel.text)
+        else:
+            self.waitinglabel.text=""
+            self.waitinglabel.rebuild()
 
     def check_length_of_input_field(self):
         self.play_button.disable()
@@ -59,3 +71,25 @@ class GenerateChoice(View):
             self.play_button.enable()
         
         self.warninglabel.rebuild()
+
+    def generate_board(self):
+        solver=Solver()
+        self.inputpuzzlestring.text=solver.board.returnPuzzleString()
+        self.inputpuzzlestring.rebuild()
+        self.check_length_of_input_field()
+        self.running_generation=False
+        self.inputpuzzlestring.enable()
+
+    def updatewaitingstatus(self):
+        text=""
+        if self.waitinglabel.text=="Waiting":
+            text="Waiting."
+        elif self.waitinglabel.text=="Waiting.":
+            text="Waiting.."
+        elif self.waitinglabel.text=="Waiting..":
+            text="Waiting..."
+        else:
+            text="Waiting"
+
+        self.waitinglabel.text=text
+        self.waitinglabel.rebuild()

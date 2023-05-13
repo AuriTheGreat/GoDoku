@@ -40,7 +40,6 @@ class BoxCandidateReductionMethod(SolvingMethod):
         for i in subsetvalues:
             if 1<len(subsetvalues[i])<4:
                 tiles_that_are_in_box=[]
-
                 for j in subsetvalues[i]:
                     if j in box:
                         tiles_that_are_in_box.append(j)
@@ -56,7 +55,8 @@ class BoxCandidateReductionMethod(SolvingMethod):
                                 changed=True
                                 self.candidateschanged=True
                                 j.candidatevalues=newvalues
-                                j.solecandidate()
+                                if j.solecandidate():
+                                    self.valuefound=True
                     if changed:
                         return True
         return False
