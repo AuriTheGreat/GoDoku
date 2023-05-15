@@ -5,7 +5,8 @@ class NakedPairMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Naked Pair Method"
-    def Solve(self, helper=False):
+        self.description = "There is a set of two candidate digits in two tiles in the same row/column/square, therefore eliminating them from the rest of row/column/square"
+    def Solve(self):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i
@@ -34,12 +35,10 @@ class NakedPairMethod(SolvingMethod):
                     newvalues="".join([k for k in j.candidatevalues if k not in i.candidatevalues])
                     if j.candidatevalues!=newvalues:
                         self.candidateschanged=True
+                        changed=True
                         j.candidatevalues=newvalues
-                        if len(j.candidatevalues)==1:
+                        if i.solecandidate():
                             self.valuefound=True
-                            changed=True
-                            j.value=j.candidatevalues[0]
-                            j.candidatevalues=""
                 if changed:
                     return True
             else:

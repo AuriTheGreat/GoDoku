@@ -5,7 +5,7 @@ class SolvingMethod():
         self.board = board
         self.candidateschanged=False
         self.valuefound=False
-    def Solve(self, helper=False):
+    def Solve(self):
         return
-    def HelperSolve(self, helper=False):
-        self.Solve(helper=True)
+    def HelperSolve(self):
+        return

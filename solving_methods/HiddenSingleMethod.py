@@ -5,7 +5,8 @@ class HiddenSingleMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Hidden Single Method"
-    def Solve(self, helper=False):
+        self.description = "This digit can only reside in this single tile in the entire row/column/square"
+    def Solve(self):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 candidatevalues_in_same_row=[k.candidatevalues for k in i]

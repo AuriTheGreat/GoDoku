@@ -5,7 +5,8 @@ class NakedTripletMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Naked Triplet Method"
-    def Solve(self, helper=False):
+        self.description = "There is a set of three candidate digits in three tiles in the same row/column/square, therefore eliminating them from the rest of row/column/square"
+    def Solve(self):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i
@@ -33,16 +34,16 @@ class NakedTripletMethod(SolvingMethod):
                         continue
                     if len(set(a.candidatevalues+b.candidatevalues+c.candidatevalues))==3:
                         changed=False
+                        tripleset=sorted(set(a.candidatevalues+b.candidatevalues+c.candidatevalues))
                         for i in candidatevalueset:
                             if i!=a and i!=b and i!=c:
-                                newvalues="".join([k for k in i.candidatevalues if k not in sorted(set(a.candidatevalues+b.candidatevalues+c.candidatevalues))])
+                                newvalues="".join([k for k in i.candidatevalues if k not in tripleset])
                                 if i.candidatevalues!=newvalues:
                                     self.candidateschanged=True
+                                    changed=True
                                     i.candidatevalues=newvalues
-                                    if len(i.candidatevalues)==1:
+                                    if i.solecandidate():
                                         self.valuefound=True
-                                        i.value=i.candidatevalues[0]
-                                        i.candidatevalues=""
                         if changed:
                             return True
         return False

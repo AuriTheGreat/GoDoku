@@ -7,7 +7,7 @@ class HiddenPairMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Hidden Pair Method"
-    def Solve(self, helper=False):
+    def Solve(self):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i

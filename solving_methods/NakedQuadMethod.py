@@ -5,7 +5,8 @@ class NakedQuadMethod(SolvingMethod):
     def __init__(self, board):
         super().__init__(board)
         self.name = "Naked Quad Method"
-    def Solve(self, helper=False):
+        self.description = "There is a set of four candidate digits in four tiles in the same row/column/square, therefore eliminating them from the rest of row/column/square"
+    def Solve(self):
         for c1, i in enumerate(self.board.tiles):
             for c2, j in enumerate(i):
                 tiles_in_same_row=i
@@ -42,10 +43,8 @@ class NakedQuadMethod(SolvingMethod):
                                         changed=True
                                         self.candidateschanged=True
                                         i.candidatevalues=newvalues
-                                        if len(i.candidatevalues)==1:
+                                        if i.solecandidate():
                                             self.valuefound=True
-                                            i.value=i.candidatevalues[0]
-                                            i.candidatevalues=""
                             if changed:
                                 return True
         return False

@@ -6,7 +6,7 @@ class BoxCandidateReductionMethod(SolvingMethod):
         super().__init__(board)
         self.name = "Box Candidate Reduction Method"
         self.description = "A particular digit must appear on a specific row or column within a box. This means that this digit can be eliminated from other rows and columns in the same box"
-    def Solve(self, helper=False):
+    def Solve(self):
         for i in range(9):
             for j in range(9):
                 currenttile=self.board.tiles[i][j]

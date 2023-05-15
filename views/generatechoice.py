@@ -1,7 +1,7 @@
 import pygame
 import pygame_gui
 import threading
-from solver import Solver
+from solver.Solver import Solver
 from views.view import View
 from views.solveview import SolveView
 from views.inputboardview import InputBoardView

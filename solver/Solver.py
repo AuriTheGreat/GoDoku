@@ -4,37 +4,8 @@ import random
 import time
 from board import Board
 from solving_methods import CandidateTilesElimination, HiddenSingleMethod, NakedPairMethod, NakedTripletMethod, NakedQuadMethod, HiddenPairMethod, HiddenTripletMethod, PointingSubsetsMethod, BoxCandidateReductionMethod
+from solver.Solution import Solution, SolutionStep
 
-class SolutionStep():
-    def __init__(self, oldstring, newstring, method):
-        self.newboard=newstring
-        self.response=""
-        oldstring=oldstring.split("/")
-        newstring=newstring.split("/")
-
-        differences=[]
-
-        if method.name=="Candidate Tiles Elimination":
-            for i in range(81):
-                if oldstring[i]!=newstring[i] and len(newstring[i])==1:
-                    differences.append(i)
-
-            self.response+=method.name + " has discovered digits: \n"
-            for i in differences:
-                self.response+=self.gettilecoordinates(i) + ": " + newstring[i] + "\n"
-        else:
-            for i in range(81):
-                if oldstring[i]!=newstring[i]:
-                    differences.append(i)
-
-            self.response+=method.name + " made the following changes: \n"
-            for i in differences:
-                self.response+=self.gettilecoordinates(i) + ": " + oldstring[i] + "->" + newstring[i] + "\n"
-
-        self.response+=method.description + "."
-
-    def gettilecoordinates(self, number):
-        return "r" + str(math.floor(number/9)+1) + "c" + str((number%9)+1)
 
 class Solver():
     def __init__(self, board=""):
@@ -52,9 +23,9 @@ class Solver():
         self.board = board
         self.solutioncount=0
 
-        self.partialsolutionstep=""
+
+        self.solution=Solution()
         self.helperresponse=""
-        self.solutionlist=[]
 
         if board=="":
             self.GenerateBoard()
@@ -64,7 +35,8 @@ class Solver():
                 continue
             i.board=self.board
             oldboard=self.board.returnPuzzleString_with_candidates()
-            i.Solve(helper)
+            i.Solve()
+         
             """
             if i.valuefound or i.candidateschanged:
                 if i.valuefound:
@@ -78,14 +50,14 @@ class Solver():
                 i.valuefound=False
                 if helper:
                     newboard=self.board.returnPuzzleString_with_candidates()
-                    self.solutionlist.append(SolutionStep(oldboard, newboard, i))
-                self.Solve(helper)
+                    self.solution.addsolution(oldboard, newboard, i)
+                self.Solve(helper=helper)
                 break
-            if i.candidateschanged:
+            elif i.candidateschanged:
                 i.candidateschanged=False
                 if helper:
                     newboard=self.board.returnPuzzleString_with_candidates()
-                    self.solutionlist.append(SolutionStep(oldboard, newboard, i))
+                    self.solution.addsolution(oldboard, newboard, i)
                 self.Solve(lastmethod=i.name, helper=helper)
                 break
         if self.board.isSolved():
@@ -131,20 +103,20 @@ class Solver():
         return False
 
 
-    def HelperSolve(self, currentsolution=""):
-        if not(self.solutionlist and self.partialsolutionstep.newboard==currentsolution):
-            self.solutionlist=[]
-            puzzlestring=self.board.returnPuzzleString_with_candidates()
+    def HelperSolve(self, currentboard=""):
+        if not self.solution.getsolution(currentboard):
+            self.solution=Solution()
+            self.board.insertTiles_with_candidates(currentboard)
             if self.Solve():
-                self.board.insertTiles_with_candidates(puzzlestring)
+                self.board.insertTiles_with_candidates(currentboard)
                 self.Solve(helper=True)
-                self.board.insertTiles_with_candidates(puzzlestring)
+                self.board.insertTiles_with_candidates(currentboard)
             else:
                 return False
-        if self.solutionlist:
-            self.partialsolutionstep=self.solutionlist.pop(0)
-            self.board.insertTiles_with_candidates(self.partialsolutionstep.newboard)
-            self.helperresponse=self.partialsolutionstep.response
+        newboard=self.solution.getsolution(currentboard)
+        if newboard:
+            self.board.insertTiles_with_candidates(newboard)
+            self.helperresponse=self.solution.response
             return True
         return False
 
@@ -214,4 +186,5 @@ class Solver():
             else:
                 currentattempt+=1
         self.board.insertTiles(lastcorrectpuzzlestring)
+
 

@@ -3,7 +3,7 @@ from pyexpat.errors import messages
 import pygame
 import pygame_gui
 from board import Board
-from solver import Solver
+from solver.Solver import Solver
 from views.view import View
 from collections import Counter
 from views.inputboardview import InputBoardView

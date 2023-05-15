@@ -70,8 +70,11 @@ class Board():
         for c1, i in enumerate(self.tiles):
             for c2, j in enumerate(i):
                 newvalue=string[c1*9+c2]
-                j.value=newvalue
-                j.default=True
+                if len(newvalue)>1:
+                    j.candidatevalues=newvalue
+                    j.value=""
+                else:
+                    j.value=newvalue
 
 
     def returnPuzzleString(self):

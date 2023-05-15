@@ -1,6 +1,6 @@
 import unittest
 import board as b
-import solver as s
+import solver.Solver as s
 
 class InteractionMethodTest(unittest.TestCase):
     def test1(self):
