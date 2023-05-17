@@ -17,8 +17,6 @@ class SolutionStep():
                     differences.append(i)
 
             self.response+=method.name + " has discovered digits: \n"
-            if not differences:
-                self.skip=True
             for i in differences:
                 self.response+=self.gettilecoordinates(i) + ": " + newstring[i] + "\n"
         else:
@@ -30,6 +28,8 @@ class SolutionStep():
             for i in differences:
                 self.response+=self.gettilecoordinates(i) + ": " + oldstring[i] + "->" + newstring[i] + "\n"
 
+        if not differences:
+            self.skip=True
         self.response+=method.description + "."
 
     def gettilecoordinates(self, number):

@@ -58,6 +58,7 @@ class Board():
     def insertTiles(self, string):
         for c1, i in enumerate(self.tiles):
             for c2, j in enumerate(i):
+                j.candidatevalues=""
                 newvalue=string[c1*9+c2]
                 if newvalue!="0":
                     j.value=newvalue

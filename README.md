@@ -4,14 +4,12 @@ and is able to give out helpful advice.
 
 
 ## Features
-- Basic solving Methods, including:
+- Basic solving methods, including:
 	- Candidate Elimination
 	- Hidden Singles
 	- Naked Subsets (Pairs, Triplets, Quads)
+	- Interaction Methods (Pointing pairs and box-row reduction)
 - Different ways to input Sudoku boards, using:
 	- Puzzle string
 	- GUI
-
-## TODO
-- Interaction Methods (Pointing pairs and box-row reduction)
-- Advice part of the project.
+- A basic step by step explanation of how to solve a Sudoku.

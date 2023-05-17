@@ -16,6 +16,8 @@ class CandidateTilesElimination(SolvingMethod):
                     values_in_same_column=[k[c2].value for k in self.board.tiles]
                     values_in_same_box=[g.value for c3,k in enumerate(self.board.tiles) for c4,g in enumerate(k) if math.floor(c1/3)==math.floor(c3/3) and math.floor(c2/3)==math.floor(c4/3)]
                     newcandidatevalues="".join([t for t in values if t not in values_in_same_row and t not in values_in_same_column and t not in values_in_same_box])
+                    if j.candidatevalues:
+                        newcandidatevalues="".join([k for k in newcandidatevalues if k in j.candidatevalues])
                     if j.candidatevalues!=newcandidatevalues:
                         j.candidatevalues=newcandidatevalues
                         self.candidateschanged=True
