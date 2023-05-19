@@ -29,10 +29,8 @@ class Solver():
 
         if board=="":
             self.GenerateBoard()
-    def Solve(self, lastmethod="", helper=False):
+    def Solve(self, helper=False):
         for i in self.solvingMethods:
-            if i.name=="Candidate Tiles Elimination" and lastmethod in ["Naked Pair Method", "Naked Triplet Method", "Naked Quad Method", "Hidden Pair Method", "Hidden Triplet Method", "Pointing Subsets Method", "Box Candidate Reduction Method"]:
-                continue
             i.board=self.board
             oldboard=self.board.returnPuzzleString_with_candidates()
             i.Solve()
@@ -58,7 +56,7 @@ class Solver():
                 if helper:
                     newboard=self.board.returnPuzzleString_with_candidates()
                     self.solution.addsolution(oldboard, newboard, i)
-                self.Solve(lastmethod=i.name, helper=helper)
+                self.Solve(helper=helper)
                 break
         if self.board.isSolved():
             return True

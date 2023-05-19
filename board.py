@@ -4,12 +4,10 @@ class Tile():
         self.name="r"+str(x+1)+"c"+str(y+1)
         self.value=""
         self.candidatevalues=""
-        self.default=False
 
     def solecandidate(self):
         if len(self.candidatevalues)==1:
             self.valuefound=True
-            changed=True
             self.value=self.candidatevalues[0]
             self.candidatevalues=""
             return True
@@ -62,7 +60,6 @@ class Board():
                 newvalue=string[c1*9+c2]
                 if newvalue!="0":
                     j.value=newvalue
-                    j.default=True
                 else:
                     j.value=""
 

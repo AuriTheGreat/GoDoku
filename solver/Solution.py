@@ -54,7 +54,3 @@ class Solution():
     def addsolution(self, oldboard, newboard, method):
         newsolutionstep=SolutionStep(oldboard, newboard, method)
         self.__solutionlist.append(newsolutionstep)
-
-    def getinitialboard(self):
-        if self.__solutionlist:
-            return self.__solutionlist[0].oldboard

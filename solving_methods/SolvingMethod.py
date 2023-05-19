@@ -7,5 +7,3 @@ class SolvingMethod():
         self.valuefound=False
     def Solve(self):
         return
-    def HelperSolve(self):
-        return
