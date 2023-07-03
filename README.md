@@ -2,6 +2,7 @@
 University project, which is meant to be a Sudoku solver that would capable of not just solving a Sudoku, but also is able to solve Sudokus in a human way
 and is able to give out helpful advice. 
 
+![McGovern screenshot](https://cdn.discordapp.com/attachments/297780905789882368/1125414734762610788/image.png)
 
 ## Features
 - Basic solving methods, including:
